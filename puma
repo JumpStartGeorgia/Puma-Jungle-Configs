@@ -11,8 +11,15 @@
 ### END INIT INFO
 
 # Author: Darío Javier Cravero <dario@exordo.com>
-#
 # Do NOT "set -e"
+
+##############################################
+# MODIFICATION BY JUMPSTART 2017-02-23
+# - added current folder to application directory path for bundle exec
+# - added ability to run the bundle exec lines as the application user from the config file
+##############################################
+
+
 
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/usr/local/bin:/usr/local/sbin/:/sbin:/usr/sbin:/bin:/usr/bin
@@ -103,6 +110,10 @@ do_stop_one() {
   log_daemon_msg "--> Stopping $1"
   PIDFILE=$1/tmp/puma/pid
   STATEFILE=$1/tmp/puma/state
+
+  i=`grep $1 $CONFIG`
+  user=`echo $i | cut -d , -f 2`
+
   if [ -e $PIDFILE ]; then
     PID=`cat $PIDFILE`
     if [ "`ps -A -o pid= | grep -c $PID`" -eq 0 ]; then
@@ -110,7 +121,7 @@ do_stop_one() {
     else
       log_daemon_msg "---> About to kill PID `cat $PIDFILE`"
       if [ "$USE_LOCAL_BUNDLE" -eq 1 ]; then
-        cd $1 && bundle exec pumactl --state $STATEFILE stop
+        su - $user -c "cd $1/current && bundle exec pumactl --state $STATEFILE stop"
       else
         pumactl --state $STATEFILE stop
       fi
@@ -194,11 +205,12 @@ do_status_one() {
   PIDFILE=$1/tmp/puma/pid
   i=`grep $1 $CONFIG`
   dir=`echo $i | cut -d , -f 1`
+  user=`echo $i | cut -d , -f 2`
   
   if [ -e $PIDFILE ]; then
     log_daemon_msg "--> About to status puma $1"
     if [ "$USE_LOCAL_BUNDLE" -eq 1 ]; then
-      cd $1 && bundle exec pumactl --state $dir/tmp/puma/state stats
+      su - $user -c "cd $1/current && bundle exec pumactl --state $dir/tmp/puma/state stats"
     else
       pumactl --state $dir/tmp/puma/state stats
     fi
