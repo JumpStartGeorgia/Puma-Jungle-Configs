@@ -12,3 +12,7 @@ The original files were committed to this repo first and then the changes were m
 # How to Setup the Server
 Follow the instructions to install the [Puma Jungle](https://github.com/puma/puma/tree/master/tools/jungle/init.d), but instead of using the puma and run-puma files from that repo, use the ones here.
 
+# How to Register Your App with Puma Jungle
+There are two ways to register your Rails app with the Puma Jungle.
+* If you have not deployed your application yet, your application will automatically be registered in the jungle when you run the `mina post_setup` task.
+* If your application is already deployed, or if you just want to do it by hand, run the folowing task: `mina puma:jungle:add`.
