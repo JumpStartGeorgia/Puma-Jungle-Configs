@@ -11,6 +11,11 @@ The original files were committed to this repo first and then the changes were m
 
 # How to Setup the Server
 Follow the instructions to install the [Puma Jungle](https://github.com/puma/puma/tree/master/tools/jungle/init.d), but instead of using the puma and run-puma files from that repo, use the ones here.
+* After you copy the files onto the server, make sure the owner and group are root. If you need to set this, run the following:
+  * sudo chown root /etc/init.d/puma
+  * sudo chgrp root /etc/init.d/puma
+  * sudo chown root /usr/local/bin/run-puma
+  * sudo chgrp root /usr/local/bin/run-puma
 
 # How to Register Your App with Puma Jungle
 There are two ways to register your Rails app with the Puma Jungle.
